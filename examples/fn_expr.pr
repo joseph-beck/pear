@@ -1,0 +1,7 @@
+fn run() {
+    let things: []string = ['123', "123"]
+
+    foreach thing in things {
+        println(thing)
+    }
+}
