@@ -6,10 +6,12 @@ import (
 	"strings"
 
 	"github.com/joseph-beck/pear/pkg/lexer"
+	"github.com/joseph-beck/pear/pkg/parser"
+	"github.com/sanity-io/litter"
 )
 
 func main() {
-	bytes, err := os.ReadFile("examples/fn_expr.pr")
+	bytes, err := os.ReadFile("examples/math_expr.pr")
 	if err != nil {
 		panic(err)
 	}
@@ -21,4 +23,7 @@ func main() {
 	for _, t := range tokens {
 		t.Debug()
 	}
+
+	ast := parser.Parse(tokens)
+	litter.Dump(ast)
 }
