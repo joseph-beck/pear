@@ -1,0 +1,14 @@
+let foo = 45.5;
+let bar = foo * 10;
+
+const isGreater = foo > 10;
+
+let newFoo = -45.5;
+let newBar = newFoo * 10 + (45 / 10 - -5);
+
+const isLess = newBar < 100;
+
+let thing: number = -10 + 5;
+
+let array: []number;
+let array2: [][]number;

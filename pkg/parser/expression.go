@@ -26,7 +26,7 @@ func parseExpression(p *parser, bp bindingPower) ast.Expression {
 			panic(fmt.Sprintf("No left denotation for %s", k))
 		}
 
-		l = led(p, l, bp)
+		l = led(p, l, bindingPowerLookup[k])
 	}
 
 	return l
@@ -60,5 +60,34 @@ func parseBinaryExpression(p *parser, l ast.Expression, bp bindingPower) ast.Exp
 		Left:     l,
 		Right:    r,
 		Operator: t,
+	}
+}
+
+func parsePrefixExpression(p *parser) ast.Expression {
+	t := p.advance()
+	r := parseExpression(p, defaultBindingPower)
+
+	return ast.PrefixExpression{
+		Operator: t,
+		Right:    r,
+	}
+}
+
+func parseGroupingExpression(p *parser) ast.Expression {
+	p.advance()
+	e := parseExpression(p, defaultBindingPower)
+	p.expect(lexer.CloseParen, "Expected expression to be closed by paren")
+
+	return e
+}
+
+func parseAssignmentExpression(p *parser, l ast.Expression, bp bindingPower) ast.Expression {
+	t := p.advance()
+	r := parseExpression(p, defaultBindingPower)
+
+	return ast.AssignmentExpression{
+		Operator: t,
+		Right:    r,
+		Assignee: l,
 	}
 }

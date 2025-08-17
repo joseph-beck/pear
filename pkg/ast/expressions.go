@@ -27,3 +27,18 @@ type BinaryExpression struct {
 }
 
 func (e BinaryExpression) expression() {}
+
+type PrefixExpression struct {
+	Operator lexer.Token
+	Right    Expression
+}
+
+func (e PrefixExpression) expression() {}
+
+type AssignmentExpression struct {
+	Assignee Expression
+	Operator lexer.Token
+	Right    Expression
+}
+
+func (e AssignmentExpression) expression() {}

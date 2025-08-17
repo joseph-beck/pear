@@ -36,8 +36,7 @@ type NullDenotationLookup map[lexer.TokenKind]nullDenotationHandler
 
 var nullDenotationLookup = NullDenotationLookup{}
 
-func nullDenotation(k lexer.TokenKind, bp bindingPower, fn nullDenotationHandler) {
-	bindingPowerLookup[k] = bp
+func nullDenotation(k lexer.TokenKind, fn nullDenotationHandler) {
 	nullDenotationLookup[k] = fn
 }
 
@@ -57,6 +56,10 @@ var bindingPowerLookup = BindingPowerLookup{}
 
 // createLookups must be called before anything in the parser package is ran
 func createLookups() {
+	leftDenotation(lexer.Assignment, assignment, parseAssignmentExpression)
+	leftDenotation(lexer.PlusEquals, assignment, parseAssignmentExpression)
+	leftDenotation(lexer.MinusEquals, assignment, parseAssignmentExpression)
+
 	leftDenotation(lexer.And, logical, parseBinaryExpression)
 	leftDenotation(lexer.Or, logical, parseBinaryExpression)
 	leftDenotation(lexer.Range, logical, parseBinaryExpression)
@@ -75,7 +78,14 @@ func createLookups() {
 	leftDenotation(lexer.Divide, multiplicative, parseBinaryExpression)
 	leftDenotation(lexer.Modulus, multiplicative, parseBinaryExpression)
 
-	nullDenotation(lexer.Number, primary, parsePrimaryExpression)
-	nullDenotation(lexer.String, primary, parsePrimaryExpression)
-	nullDenotation(lexer.Identifier, primary, parsePrimaryExpression)
+	nullDenotation(lexer.Number, parsePrimaryExpression)
+	nullDenotation(lexer.String, parsePrimaryExpression)
+	nullDenotation(lexer.Identifier, parsePrimaryExpression)
+
+	nullDenotation(lexer.OpenParen, parseGroupingExpression)
+
+	nullDenotation(lexer.Minus, parsePrefixExpression)
+
+	statement(lexer.Const, parseVariableDeclarationStatement)
+	statement(lexer.Let, parseVariableDeclarationStatement)
 }

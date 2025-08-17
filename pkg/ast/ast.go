@@ -7,3 +7,8 @@ type Statement interface {
 type Expression interface {
 	expression()
 }
+
+type Type interface {
+	// type is a reserved key word go so use this instead...
+	archetype()
+}
