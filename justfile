@@ -8,9 +8,13 @@ clean:
     rm -rf build
     go clean
 
-update:
-    go get -u ./...
+install:
     go mod tidy
+    go install ./...
+
+update:
+    go mod tidy
+    go get -u ./...
 
 test:
     go clean -testcache
