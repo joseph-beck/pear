@@ -1,0 +1,77 @@
+name: Checks
+
+on:
+  push:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Just Install
+      run: npm i -g rust-just
+
+    - name: Go Setup
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24'
+
+    - name: Build
+      run: rust-just build
+  
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Just Install
+      run: npm i -g rust-just
+
+    - name: Go Setup
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24'
+
+    - name: Test
+      run: rust-just test
+
+  format:
+    name: Format
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+
+    - name: Just Install
+      run: npm i -g rust-just
+
+    - name: Go Setup
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.24'
+
+    - name: Format
+      run: rust-just format
