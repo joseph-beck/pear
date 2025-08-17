@@ -25,6 +25,12 @@ func parseStatement(p *parser) ast.Statement {
 func parseVariableDeclarationStatement(p *parser) ast.Statement {
 	var t ast.Type
 	var v ast.Expression
+	var pub bool
+
+	if p.kind() == lexer.Pub {
+		pub = true
+		p.expect(lexer.Pub, "Unable to find public keyword in variable decloration")
+	}
 
 	cnst := p.advance().Kind == lexer.Const
 	nme := p.expect(lexer.Identifier, "Unable to find variable name in decloration").Value
@@ -54,14 +60,21 @@ func parseVariableDeclarationStatement(p *parser) ast.Statement {
 		Constant:      cnst,
 		VariableValue: v,
 		Type:          t,
+		Public:        pub,
 	}
 }
 
 func parseStructDeclorationStatement(p *parser) ast.Statement {
-	p.expect(lexer.Struct)
-
 	var flds = map[string]ast.StructField{}
 	var mthds = map[string]ast.StructMethod{}
+	var pub bool
+
+	if p.kind() == lexer.Pub {
+		pub = true
+		p.expect(lexer.Pub, "Unable to find public keyword in struct decloration")
+	}
+
+	p.expect(lexer.Struct)
 
 	n := p.expect(lexer.Identifier).Value
 
@@ -69,7 +82,13 @@ func parseStructDeclorationStatement(p *parser) ast.Statement {
 
 	for !p.eof() && p.kind() != lexer.CloseCurly {
 		var static bool
+		var public bool
 		var name string
+
+		if p.kind() == lexer.Pub {
+			public = true
+			p.expect(lexer.Pub, "Unable to find public keyword in struct field or method")
+		}
 
 		if p.kind() == lexer.Static {
 			static = true
@@ -93,19 +112,32 @@ func parseStructDeclorationStatement(p *parser) ast.Statement {
 			flds[name] = ast.StructField{
 				Type:   tp,
 				Static: static,
+				Public: public,
 			}
 
 			continue
 		}
 
-		panic("etc")
+		panic("unable to parse struct methods for now...")
 	}
 
 	p.expect(lexer.CloseCurly, "Unable to find closing curly for struct")
 
 	return ast.StructStatement{
 		Name:    n,
+		Public:  pub,
 		Fields:  flds,
 		Methods: mthds,
 	}
+}
+
+func parsePubStatement(p *parser) ast.Statement {
+	switch p.peak().Kind {
+	case lexer.Struct:
+		return parseStructDeclorationStatement(p)
+	case lexer.Let, lexer.Const:
+		return parseVariableDeclarationStatement(p)
+	}
+
+	panic("Unable to parse public statement")
 }

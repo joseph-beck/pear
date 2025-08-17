@@ -17,22 +17,26 @@ type VariableDeclorationStatement struct {
 	Constant      bool
 	VariableValue Expression
 	Type          Type
+	Public        bool
 }
 
 func (s VariableDeclorationStatement) statement() {}
 
 type StructField struct {
 	Type   Type
+	Public bool
 	Static bool
 }
 
 type StructMethod struct {
 	Type   Type
+	Public bool
 	Static bool
 }
 
 type StructStatement struct {
 	Name    string
+	Public  bool
 	Fields  map[string]StructField
 	Methods map[string]StructMethod
 }

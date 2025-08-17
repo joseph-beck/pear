@@ -73,6 +73,7 @@ const (
 	In
 	Struct
 	Static
+	Pub
 )
 
 var Keywords map[string]TokenKind = map[string]TokenKind{
@@ -94,6 +95,7 @@ var Keywords map[string]TokenKind = map[string]TokenKind{
 	"in":      In,
 	"struct":  Struct,
 	"static":  Static,
+	"pub":     Pub,
 }
 
 func (t TokenKind) String() string {
@@ -208,6 +210,8 @@ func (t TokenKind) String() string {
 		return "struct"
 	case Static:
 		return "static"
+	case Pub:
+		return "pub"
 	default:
 		return fmt.Sprintf("unknown(%d)", t)
 	}

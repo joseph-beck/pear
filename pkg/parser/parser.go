@@ -32,6 +32,11 @@ func (p *parser) kind() lexer.TokenKind {
 	return p.token().Kind
 }
 
+// Peak at the next token without advancing the parser.
+func (p *parser) peak() lexer.Token {
+	return p.tokens[p.position+1]
+}
+
 // Advanced the parse, and get the token.
 func (p *parser) advance() lexer.Token {
 	t := p.token()
@@ -48,7 +53,7 @@ func (p *parser) expect(e lexer.TokenKind, err ...any) lexer.Token {
 			err = append(err, fmt.Sprintf("expected %s but got %s instead\n", e, k))
 		}
 
-		panic(err)
+		panic(fmt.Sprintf("unable to parse the token and got {%s} {%s} %T", t, k, err))
 	}
 
 	return p.advance()

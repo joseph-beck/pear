@@ -89,7 +89,10 @@ func createLookups() {
 	leftDenotation(lexer.OpenCurly, call, parseStructInstantiationExpression)
 	nullDenotation(lexer.OpenBracket, parseArrayInstantiationExpression)
 
+	statement(lexer.Pub, parsePubStatement)
+
 	statement(lexer.Const, parseVariableDeclarationStatement)
 	statement(lexer.Let, parseVariableDeclarationStatement)
+
 	statement(lexer.Struct, parseStructDeclorationStatement)
 }

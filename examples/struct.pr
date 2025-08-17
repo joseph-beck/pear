@@ -1,6 +1,6 @@
-struct Thing {
+pub struct Thing {
     static name: string;
-    age: number;
+    pub age: number;
 }
 
 const thing = Thing{
