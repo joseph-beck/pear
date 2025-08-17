@@ -56,3 +56,56 @@ func parseVariableDeclarationStatement(p *parser) ast.Statement {
 		Type:          t,
 	}
 }
+
+func parseStructDeclorationStatement(p *parser) ast.Statement {
+	p.expect(lexer.Struct)
+
+	var flds = map[string]ast.StructField{}
+	var mthds = map[string]ast.StructMethod{}
+
+	n := p.expect(lexer.Identifier).Value
+
+	p.expect(lexer.OpenCurly, "Unable to find opening curly for struct")
+
+	for !p.eof() && p.kind() != lexer.CloseCurly {
+		var static bool
+		var name string
+
+		if p.kind() == lexer.Static {
+			static = true
+			p.expect(lexer.Static, "Unable to find static keyword in struct field or method")
+		}
+
+		if p.kind() == lexer.Identifier {
+			name = p.expect(lexer.Identifier, "Unable to find field in struct").Value
+
+			p.expect(lexer.Colon, "Unable to find colon after field in struct")
+
+			tp := parseType(p, defaultBindingPower)
+
+			p.expect(lexer.SemiColon, "Unable to find semi colon after type declaration")
+
+			_, exists := flds[name]
+			if exists {
+				panic(fmt.Sprintf("Duplicate field name {%s} in struct {%s}", name, n))
+			}
+
+			flds[name] = ast.StructField{
+				Type:   tp,
+				Static: static,
+			}
+
+			continue
+		}
+
+		panic("etc")
+	}
+
+	p.expect(lexer.CloseCurly, "Unable to find closing curly for struct")
+
+	return ast.StructStatement{
+		Name:    n,
+		Fields:  flds,
+		Methods: mthds,
+	}
+}

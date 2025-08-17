@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	bytes, err := os.ReadFile("examples/types.pr")
+	bytes, err := os.ReadFile("examples/struct.pr")
 	if err != nil {
 		panic(err)
 	}

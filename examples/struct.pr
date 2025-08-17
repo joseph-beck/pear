@@ -1,0 +1,11 @@
+struct Thing {
+    static name: string;
+    age: number;
+}
+
+const thing = Thing{
+    name: "Thing",
+    age: 1,
+};
+
+const numbers = []number{1,2};

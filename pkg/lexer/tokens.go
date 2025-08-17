@@ -71,6 +71,8 @@ const (
 	Export
 	TypeOf
 	In
+	Struct
+	Static
 )
 
 var Keywords map[string]TokenKind = map[string]TokenKind{
@@ -90,6 +92,8 @@ var Keywords map[string]TokenKind = map[string]TokenKind{
 	"export":  Export,
 	"typeof":  TypeOf,
 	"in":      In,
+	"struct":  Struct,
+	"static":  Static,
 }
 
 func (t TokenKind) String() string {
@@ -200,6 +204,10 @@ func (t TokenKind) String() string {
 		return "export"
 	case In:
 		return "in"
+	case Struct:
+		return "struct"
+	case Static:
+		return "static"
 	default:
 		return fmt.Sprintf("unknown(%d)", t)
 	}

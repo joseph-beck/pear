@@ -42,3 +42,17 @@ type AssignmentExpression struct {
 }
 
 func (e AssignmentExpression) expression() {}
+
+type StructInstantationExpression struct {
+	Name   string
+	Fields map[string]Expression
+}
+
+func (e StructInstantationExpression) expression() {}
+
+type ArrayInstantationExpression struct {
+	Underlying Type
+	Contents   []Expression
+}
+
+func (e ArrayInstantationExpression) expression() {}

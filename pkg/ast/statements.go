@@ -20,3 +20,21 @@ type VariableDeclorationStatement struct {
 }
 
 func (s VariableDeclorationStatement) statement() {}
+
+type StructField struct {
+	Type   Type
+	Static bool
+}
+
+type StructMethod struct {
+	Type   Type
+	Static bool
+}
+
+type StructStatement struct {
+	Name    string
+	Fields  map[string]StructField
+	Methods map[string]StructMethod
+}
+
+func (s StructStatement) statement() {}

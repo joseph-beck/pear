@@ -6,6 +6,7 @@ import (
 
 	"github.com/joseph-beck/pear/pkg/ast"
 	"github.com/joseph-beck/pear/pkg/lexer"
+	"github.com/joseph-beck/pear/pkg/reflections"
 )
 
 func parseExpression(p *parser, bp bindingPower) ast.Expression {
@@ -48,7 +49,7 @@ func parsePrimaryExpression(p *parser) ast.Expression {
 			Value: p.advance().Value,
 		}
 	default:
-		panic(fmt.Sprintf("cannot create primary expression from %s\n", p.kind()))
+		panic(fmt.Sprintf("Unable to create primary expression from %s\n", p.kind()))
 	}
 }
 
@@ -89,5 +90,63 @@ func parseAssignmentExpression(p *parser, l ast.Expression, bp bindingPower) ast
 		Operator: t,
 		Right:    r,
 		Assignee: l,
+	}
+}
+
+func parseStructInstantiationExpression(p *parser, l ast.Expression, bp bindingPower) ast.Expression {
+	fmt.Print(1)
+	n := reflections.ExpectType[ast.SymbolExpression](l).Value
+	fmt.Print(2)
+	var flds = map[string]ast.Expression{}
+
+	p.expect(lexer.OpenCurly)
+
+	for !p.eof() && p.kind() != lexer.CloseCurly {
+		fmt.Print(3)
+		fld := p.expect(lexer.Identifier, "Unable to find field name in struct instantiation").Value
+
+		p.expect(lexer.Colon)
+
+		e := parseExpression(p, logical)
+
+		flds[fld] = e
+
+		if p.kind() != lexer.CloseCurly {
+			p.expect(lexer.Comma)
+		}
+	}
+
+	p.expect(lexer.CloseCurly)
+
+	return ast.StructInstantationExpression{
+		Name:   n,
+		Fields: flds,
+	}
+}
+
+func parseArrayInstantiationExpression(p *parser) ast.Expression {
+	var c = []ast.Expression{}
+
+	p.expect(lexer.OpenBracket)
+	p.expect(lexer.CloseBracket)
+
+	ut := parseType(p, defaultBindingPower)
+
+	p.expect(lexer.OpenCurly)
+
+	for !p.eof() && p.kind() != lexer.CloseCurly {
+		e := parseExpression(p, logical)
+		c = append(c, e)
+
+		if p.kind() != lexer.CloseCurly {
+			p.expect(lexer.Comma)
+		}
+	}
+
+	p.expect(lexer.CloseCurly)
+
+	return ast.ArrayInstantationExpression{
+		Underlying: ut,
+		Contents:   c,
 	}
 }
